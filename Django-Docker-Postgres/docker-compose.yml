@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+
+# POSTGRES DATABASE  
+  db:
+    image: postgres 
+    volumes:
+      - ./data/db:/var/lib/postgesql/data # we are mapping across the location of our local machine to the filesystem of the docker container
+    environment: 
+      - POSTRGES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: posgres_db
+
+# REDIS DATABASE
+  redis:
+    image: redis
+    container_name: redis_db
+    ports: 
+      - 6379:6379
+    
+    
+# DJANGO APPLICATION
+  app: # we can name our services however we want, the name of the service serves as an alias name and can later be refferenced when builing other services
+    build: . # we will build an image according to the specifications mentioned in the dockerfile 
+    volumes:
+      - .:/django_app # column indicates mirroring, that means that the data that's stored in the current directory "." 
+                      # will be mirrored in the container dircectory named "/django_app"
+    ports:
+      - 8080:8080
+      
+    image: app:tagging_test # we can name and tag an image that will be built 
+    container_name: django_container # name of the container (tag)
+    command: python manage.py runserver 0.0.0.0:8080
+    depends_on:
+      - db      # won't run unless these two sesrvices aren't up and running 
+      - redis
+  

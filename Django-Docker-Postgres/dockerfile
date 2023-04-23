@@ -1,0 +1,14 @@
+# we pull a python image from the docker hub (if not found locally )
+FROM python
+
+ENV PYTHONUNBUFFERED=1
+
+# we create a working directory inside a docker container (where we will place our application)
+WORKDIR /django_app
+
+# Now we want to copy the requirements.txt file over to our working directory, and later run it on a 
+# new image so that we can have all our dependecies installed 
+COPY requirements.txt requirements.txt 
+RUN pip3 install -r requirements.txt
+
+

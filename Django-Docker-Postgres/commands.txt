@@ -1,0 +1,9 @@
+docker build --tag python-django .
+docker -dp 8000:8000 python-django 
+
+docker compose up -d
+docker compose down
+
+docker compose run -rm app django-admin startproject core . 
+
+python manage.py migrate ### verifies whether the database is correctly connected to the django application
